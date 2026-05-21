@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stone Sprint</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="shell">
+    <section class="stage" aria-label="Stone Sprint game">
+      <canvas id="game" width="960" height="540"></canvas>
+
+      <div class="hud" aria-live="polite">
+        <div>
+          <span class="label">SCORE</span>
+          <strong id="score">0</strong>
+        </div>
+        <div>
+          <span class="label">MEAT</span>
+          <strong id="meat">0</strong>
+        </div>
+        <div>
+          <span class="label">LIFE</span>
+          <strong id="life">3</strong>
+        </div>
+        <div>
+          <span class="label">STAGE</span>
+          <strong id="stageNo">1</strong>
+        </div>
+      </div>
+
+      <button class="audio-toggle" id="audioBtn" type="button" aria-label="sound on" title="sound on">♪</button>
+
+      <div class="menu" id="menu">
+        <h1>Stone Sprint</h1>
+        <p>고인돌 느낌의 선사 시대 점프 액션</p>
+        <button id="startBtn" type="button">Start</button>
+      </div>
+
+      <div class="touch-controls" aria-label="touch controls">
+        <button data-touch="left" type="button" aria-label="left">L</button>
+        <button data-touch="right" type="button" aria-label="right">R</button>
+        <button data-touch="jump" type="button" aria-label="jump">JUMP</button>
+        <button data-touch="attack" type="button" aria-label="attack">HIT</button>
+      </div>
+    </section>
+
+    <aside class="panel">
+      <div>
+        <h2>Controls</h2>
+        <p><kbd>A</kbd>/<kbd>D</kbd> or <kbd>←</kbd>/<kbd>→</kbd> move</p>
+        <p><kbd>Space</kbd>/<kbd>W</kbd>/<kbd>↑</kbd> jump</p>
+        <p><kbd>J</kbd>/<kbd>K</kbd> swing club</p>
+        <p><kbd>P</kbd> pause</p>
+      </div>
+      <button id="restartBtn" type="button">Restart</button>
+    </aside>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>

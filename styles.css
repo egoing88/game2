@@ -1,0 +1,251 @@
+:root {
+  color-scheme: dark;
+  --ink: #f7ecd4;
+  --muted: #b7a98b;
+  --line: rgba(247, 236, 212, 0.2);
+  --panel: rgba(29, 28, 24, 0.86);
+  --coal: #171816;
+  --fern: #54745c;
+  --ember: #dd8756;
+  --sun: #f3bf68;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background:
+    linear-gradient(180deg, rgba(12, 30, 34, 0.9), rgba(28, 24, 20, 0.95)),
+    radial-gradient(circle at 20% 0%, rgba(243, 191, 104, 0.25), transparent 34%),
+    #162126;
+}
+
+button {
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: var(--ink);
+  background: #2c3028;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+}
+
+button:hover,
+button:focus-visible {
+  border-color: rgba(247, 236, 212, 0.5);
+  background: #3a3f34;
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 18px;
+  width: min(1240px, 100%);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 22px;
+  align-items: center;
+}
+
+.stage {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #111916;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.34);
+}
+
+#game {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  image-rendering: pixelated;
+}
+
+.hud {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  pointer-events: none;
+}
+
+.hud div,
+.panel {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  backdrop-filter: blur(12px);
+}
+
+.hud div {
+  min-height: 50px;
+  padding: 8px 10px;
+}
+
+.label {
+  display: block;
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.hud strong {
+  display: block;
+  margin-top: 2px;
+  color: var(--sun);
+  font-size: clamp(1rem, 2.2vw, 1.55rem);
+  line-height: 1;
+}
+
+.audio-toggle {
+  position: absolute;
+  top: 76px;
+  right: 12px;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  color: #ffe4a8;
+  background: rgba(29, 28, 24, 0.82);
+  backdrop-filter: blur(12px);
+}
+
+.audio-toggle.is-muted {
+  color: #b7a98b;
+  text-decoration: line-through;
+}
+
+.menu {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 14px;
+  padding: 24px;
+  text-align: center;
+  background: linear-gradient(180deg, rgba(16, 22, 18, 0.45), rgba(16, 22, 18, 0.78));
+}
+
+.menu.is-hidden {
+  display: none;
+}
+
+.menu h1 {
+  margin: 0;
+  color: #ffe4a8;
+  font-size: clamp(2.25rem, 8vw, 5.4rem);
+  line-height: 0.95;
+  text-transform: uppercase;
+  text-shadow: 0 6px 0 rgba(0, 0, 0, 0.22);
+}
+
+.menu p {
+  margin: 0;
+  color: #f8d99a;
+  font-weight: 800;
+}
+
+.menu button,
+.panel button {
+  min-height: 44px;
+  padding: 0 22px;
+  background: linear-gradient(180deg, #d9764e, #9e4535);
+  border-color: rgba(255, 224, 168, 0.42);
+}
+
+.panel {
+  min-height: 380px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 22px;
+  padding: 18px;
+}
+
+.panel h2 {
+  margin: 0 0 14px;
+  color: #ffe4a8;
+  font-size: 1.1rem;
+}
+
+.panel p {
+  margin: 9px 0;
+  color: #e9dec6;
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+
+kbd {
+  display: inline-grid;
+  place-items: center;
+  min-width: 24px;
+  min-height: 22px;
+  padding: 1px 6px;
+  border: 1px solid rgba(247, 236, 212, 0.24);
+  border-radius: 5px;
+  color: #ffe4a8;
+  background: rgba(0, 0, 0, 0.28);
+  font: 700 0.78rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.touch-controls {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  display: none;
+  grid-template-columns: 54px 54px 1fr 1fr;
+  gap: 8px;
+}
+
+.touch-controls button {
+  min-height: 48px;
+  background: rgba(36, 44, 34, 0.82);
+  backdrop-filter: blur(10px);
+}
+
+@media (max-width: 900px) {
+  .shell {
+    grid-template-columns: 1fr;
+    align-content: start;
+    padding: 12px;
+  }
+
+  .panel {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 720px) {
+  .hud {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .audio-toggle {
+    top: 128px;
+  }
+
+  .touch-controls {
+    display: grid;
+  }
+
+  .panel {
+    display: none;
+  }
+}
