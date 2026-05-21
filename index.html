@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>Stone Sprint</title>
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -30,7 +30,10 @@
         </div>
       </div>
 
-      <button class="audio-toggle" id="audioBtn" type="button" aria-label="sound on" title="sound on">♪</button>
+      <div class="quick-actions" aria-label="quick actions">
+        <button class="icon-toggle" id="audioBtn" type="button" aria-label="sound on" title="sound on">♪</button>
+        <button class="icon-toggle" id="fullBtn" type="button" aria-label="fullscreen" title="fullscreen">FS</button>
+      </div>
 
       <div class="menu" id="menu">
         <h1>Stone Sprint</h1>
@@ -39,10 +42,14 @@
       </div>
 
       <div class="touch-controls" aria-label="touch controls">
-        <button data-touch="left" type="button" aria-label="left">L</button>
-        <button data-touch="right" type="button" aria-label="right">R</button>
-        <button data-touch="jump" type="button" aria-label="jump">JUMP</button>
-        <button data-touch="attack" type="button" aria-label="attack">HIT</button>
+        <div class="touch-cluster move-pad">
+          <button data-touch="left" type="button" aria-label="left">L</button>
+          <button data-touch="right" type="button" aria-label="right">R</button>
+        </div>
+        <div class="touch-cluster action-pad">
+          <button data-touch="jump" type="button" aria-label="jump">JUMP</button>
+          <button data-touch="attack" type="button" aria-label="attack">HIT</button>
+        </div>
       </div>
     </section>
 

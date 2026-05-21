@@ -7,6 +7,7 @@ const ui = {
   life: document.getElementById("life"),
   stageNo: document.getElementById("stageNo"),
   audioBtn: document.getElementById("audioBtn"),
+  fullBtn: document.getElementById("fullBtn"),
   menu: document.getElementById("menu"),
   startBtn: document.getElementById("startBtn"),
   restartBtn: document.getElementById("restartBtn"),
@@ -18,6 +19,7 @@ const groundY = 436;
 const gravity = 0.78;
 const keys = new Set();
 const touch = new Set();
+const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
 
 let lastTime = 0;
 let runId = 0;
@@ -28,6 +30,34 @@ const rand = (min, max) => Math.random() * (max - min) + min;
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 const overlaps = (a, b) =>
   a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+
+function vibrate(pattern) {
+  if (isCoarsePointer && "vibrate" in navigator) {
+    navigator.vibrate(pattern);
+  }
+}
+
+function setViewportHeight() {
+  document.documentElement.style.setProperty("--app-height", `${window.innerHeight}px`);
+}
+
+function canFullscreen() {
+  return document.fullscreenEnabled && document.documentElement.requestFullscreen;
+}
+
+function tryFullscreen() {
+  if (!canFullscreen() || document.fullscreenElement) return;
+  document.documentElement.requestFullscreen().catch(() => {});
+}
+
+function toggleFullscreen() {
+  if (!canFullscreen()) return;
+  if (document.fullscreenElement) {
+    document.exitFullscreen().catch(() => {});
+  } else {
+    tryFullscreen();
+  }
+}
 
 const audio = (() => {
   let ctx;
@@ -132,19 +162,23 @@ const audio = (() => {
     },
     swing() {
       resume();
+      vibrate(18);
       noise(0.16, 0.18);
       tone(142, 0.1, "sawtooth", 0.12, sfxGain);
     },
     hit() {
+      vibrate([20, 25, 18]);
       noise(0.08, 0.22);
       tone(78, 0.11, "triangle", 0.18, sfxGain);
     },
     pickup(kind) {
+      vibrate(kind === "gem" ? [10, 20, 10] : 10);
       const start = kind === "gem" ? 520 : 392;
       tone(start, 0.08, "triangle", 0.14, sfxGain);
       tone(start * 1.5, 0.1, "triangle", 0.11, sfxGain, 0.075);
     },
     hurt() {
+      vibrate([35, 35, 35]);
       noise(0.2, 0.2);
       tone(132, 0.16, "sawtooth", 0.16, sfxGain);
       tone(88, 0.18, "sawtooth", 0.12, sfxGain, 0.08);
@@ -232,6 +266,7 @@ function startGame() {
   if (game.over) {
     game = createGame();
   }
+  if (isCoarsePointer) tryFullscreen();
   game.running = true;
   game.paused = false;
   game.over = false;
@@ -794,19 +829,38 @@ window.addEventListener("keyup", (event) => {
 
 document.querySelectorAll("[data-touch]").forEach((button) => {
   const name = button.dataset.touch;
+  const capture = (event) => {
+    try {
+      button.setPointerCapture?.(event.pointerId);
+    } catch {
+      // Some mobile browsers report a pointer that is already captured.
+    }
+  };
+  const releaseCapture = (event) => {
+    try {
+      button.releasePointerCapture?.(event.pointerId);
+    } catch {
+      // The pointer may already be released after cancel/lostcapture events.
+    }
+  };
   const press = (event) => {
     event.preventDefault();
+    capture(event);
+    button.classList.add("is-pressed");
     touch.add(name);
     if (!game.running && name === "jump") startGame();
   };
   const release = (event) => {
     event.preventDefault();
+    releaseCapture(event);
+    button.classList.remove("is-pressed");
     touch.delete(name);
   };
   button.addEventListener("pointerdown", press);
   button.addEventListener("pointerup", release);
   button.addEventListener("pointercancel", release);
   button.addEventListener("pointerleave", release);
+  button.addEventListener("lostpointercapture", release);
 });
 
 ui.startBtn.addEventListener("click", startGame);
@@ -823,4 +877,28 @@ ui.audioBtn.addEventListener("click", () => {
   ui.audioBtn.title = muted ? "sound off" : "sound on";
 });
 
+ui.fullBtn.addEventListener("click", toggleFullscreen);
+
+document.addEventListener("fullscreenchange", () => {
+  const active = Boolean(document.fullscreenElement);
+  ui.fullBtn.classList.toggle("is-muted", !active);
+  ui.fullBtn.textContent = active ? "EXIT" : "FS";
+  ui.fullBtn.setAttribute("aria-label", active ? "exit fullscreen" : "fullscreen");
+  ui.fullBtn.title = active ? "exit fullscreen" : "fullscreen";
+});
+
+window.addEventListener("resize", setViewportHeight);
+window.addEventListener("orientationchange", setViewportHeight);
+window.addEventListener("contextmenu", (event) => event.preventDefault());
+window.addEventListener("touchmove", (event) => event.preventDefault(), { passive: false });
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden && game?.running && !game.paused) {
+    game.paused = true;
+    audio.setPaused(true);
+    draw();
+  }
+});
+
+setViewportHeight();
 resetGame();
